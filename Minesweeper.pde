@@ -1,7 +1,7 @@
 import de.bezier.guido.*;
-public static final int NUM_ROWS = 10;
-public static final int NUM_COLS = 10;
-public static final int NUM_MINES = (int)(Math.random()*5)+2;
+public static final int NUM_ROWS = 20;
+public static final int NUM_COLS = 20;
+public static final int NUM_MINES = (int)(Math.random()*14)+2;
 private MSButton[][] gRid; //2d array of minesweeper 
 private ArrayList <MSButton> mines = new ArrayList<MSButton>(); //ArrayList of just the minesweeper  that are mined
 public boolean endGame, isLost;
@@ -133,27 +133,54 @@ public class MSButton
     }
 
     // called by manager
-    public void mousePressed () 
-    {
-        if(stop == true)
-        return;
-        if(mouseButton == LEFT && !flagged && !isLost){
-          clicked = true;
-          if(countMines(myRow, myCol) == 0){
-            for(int i = myRow-1; i<myRow+1; i++){
-              for(int j = myCol-1; j< myCol+1; j++){
-                if(isValid(i, j) && !gRid[i][j].clicked && (i != myRow || j != myCol))
-                gRid[i][j].mousePressed(); // recursion
+    public void mousePressed (){
+        //if(stop == true)
+        //return;
+        //if(mouseButton == LEFT && !flagged && !isLost){
+        //  clicked = true;
+        //  if(countMines(myRow, myCol) == 0){
+        //    for(int i = myRow-1; i<myRow+1; i++){
+        //      for(int j = myCol-1; j< myCol+1; j++){
+        //        if(isValid(i, j) && !gRid[i][j].clicked && (i != myRow || j != myCol))
+        //        gRid[i][j].mousePressed(); // recursion
+        //      }
+        //    }
+        //  }
+        //}
+        //if  (mines.contains( this ))
+        //  displayLosingMessage();
+        //else if(mouseButton == RIGHT && !clicked && !isLost){
+        //  flagged = !flagged;
+        //}
+        
+         clicked = true;
+        //your code here
+        if(stop == true) {
+           return;
+        }
+        if(mouseButton == RIGHT) {
+          flagged = !flagged;
+          if(flagged == false)
+            clicked = false;
+        } else if  (mines.contains( this )) {
+          displayLosingMessage();
+        } else if (countMines(myRow, myCol) > 0) {
+          setLabel(countMines(myRow, myCol));
+        } else { 
+
+        
+        for(int r = myRow-1; r <= myRow+1; r++) {
+          for(int c = myCol-1; c <= myCol+1; c++) {
+            if(isValid(r, c) && gRid[r][c].clicked == false) {
+              if(r != myRow || c != myCol) {
+                gRid[r][c].mousePressed();
               }
             }
           }
-        }
-        if  (mines.contains( this ))
-          displayLosingMessage();
-        else if(mouseButton == RIGHT && !clicked && !isLost){
-          flagged = !flagged;
-        }
+        }  
     }
+    }
+    
     public void draw () {    
         if (clicked && mines.contains(this))
           isLost = true;
@@ -173,7 +200,7 @@ public class MSButton
         text(myLabel,x+width/2,y+height/2);
         
        if (clicked && !mines.contains(this) && countMines(myRow, myCol) > 0) {
-      fill(255);
+      fill(0);
       text(countMines(myRow, myCol), x + width/2, y + height/2);
       }
       if(isWon()){
